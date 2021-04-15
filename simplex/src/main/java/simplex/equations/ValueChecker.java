@@ -11,13 +11,13 @@ public final class ValueChecker {
     }
 
 
-    double checkCost(String strCost) {
-        double cost;
-        double roundedCost;
+    double checkNumber(String strNumber) {
+        double num;
+        double roundedNum;
         try {
-            cost = Double.parseDouble(strCost);
-            roundedCost = Math.round(cost * 100.00) / 100.00;
-            if (roundedCost >= 0 && roundedCost <= 100000) return roundedCost;
+            num = Double.parseDouble(strNumber);
+            roundedNum = Math.round(num * 100.00) / 100.00;
+            if (roundedNum >= 0 && roundedNum <= 100000) return roundedNum;
         } catch (NumberFormatException nfe) {
             return 0.0;
         }

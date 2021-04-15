@@ -16,17 +16,22 @@ public class SimplexProcessCoordinator {
         tableauUpdater = new TableauUpdater();
     }
 
-    private void conductSimplexProcess(Tableau tableau, boolean ifMaximization) {
+    public void conductSimplexProcess(Tableau tableau, boolean ifMaximization) {
         indexCounter.calculateOptimalityIndexes(tableau);
+        for (int j = 0; j < tableau.getWidth(); j++) {
+            System.out.println(tableau.getOptimalityIndexes().get(j));
+        }
         do {
-            try {
-                tableauUpdater.actualizeTableau(tableau);
-                indexCounter.calculateOptimalityIndexes(tableau);
-            } catch (ArrayIndexOutOfBoundsException outOfBound) {
-                InstructionsSender.getInstructionSender().showUserInstruction(Instruction.MINIMIZATION_IMPOSSIBLE);
+            tableauUpdater.actualizeTableau(tableau);
+            indexCounter.calculateOptimalityIndexes(tableau);
+            for (int j = 0; j < tableau.getWidth(); j++) {
+                for (int i = 0; i < tableau.getLength(); i++) {
+                    System.out.println(tableau.getCoefficients().get(j).get(i));
+                    System.out.println(tableau.getOptimalityIndexes().get(i));
+                }
             }
-
         } while (!optimalityChecker.checkOptimalityForMinimization(tableau));
+        ResultsCreator resultsCreator = new ResultsCreator(tableau);
     }
 
 }

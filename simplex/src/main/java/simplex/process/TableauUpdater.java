@@ -25,24 +25,24 @@ public class TableauUpdater {
     }
 
     void actualizePivotRow(Tableau tableau, int pivotRowIndex, int pivotColumnIndex) {
-        ArrayList<Integer> pivotRow = tableau.getCoefficients().get(pivotRowIndex);
-        int pivotValue = pivotRow.get(pivotColumnIndex);
+        ArrayList<Double> pivotRow = tableau.getCoefficients().get(pivotRowIndex);
+        double pivotValue = pivotRow.get(pivotColumnIndex);
 
         for (int i = 0; i < pivotRow.size(); i++) {
-            int newCellValue = pivotRow.get(i) * pivotValue;
+            double newCellValue = pivotRow.get(i) * pivotValue;
             pivotRow.set(i, newCellValue);
         }
     }
 
     void actualizeOtherThanPivotRow(Tableau tableau, int pivotRowIndex, int pivotColumnIndex) {
 
-        ArrayList<Integer> pivotRow = tableau.getCoefficients().get(pivotRowIndex);
-        int pivotQuantity = tableau.getConstants().get(pivotRowIndex);
+        ArrayList<Double> pivotRow = tableau.getCoefficients().get(pivotRowIndex);
+        double pivotQuantity = tableau.getConstants().get(pivotRowIndex);
 
         for (int rowIndex = 0; rowIndex < tableau.getLength(); rowIndex++) {
             if (rowIndex != pivotRowIndex) {
 
-                int crossValue = tableau.getCoefficients().get(rowIndex).get(pivotColumnIndex);
+                double crossValue = tableau.getCoefficients().get(rowIndex).get(pivotColumnIndex);
 
                 actualizeCoefficients(tableau, crossValue, rowIndex, pivotRow);
 
@@ -52,21 +52,21 @@ public class TableauUpdater {
     }
 
     void actualizeCoefficients(
-            Tableau tableau, int crossValue, int rowIndex, ArrayList<Integer> pivotRow) {
+            Tableau tableau, double crossValue, int rowIndex, ArrayList<Double> pivotRow) {
 
         for (int columnIndex = 0; columnIndex < tableau.getWidth(); columnIndex++) {
 
-            int oldCoefficientValue = tableau.getCoefficients().get(rowIndex).get(columnIndex);
-            int newCoefficientValue = oldCoefficientValue - crossValue * pivotRow.get(columnIndex);
+            double oldCoefficientValue = tableau.getCoefficients().get(rowIndex).get(columnIndex);
+            double newCoefficientValue = oldCoefficientValue - crossValue * pivotRow.get(columnIndex);
 
             tableau.getCoefficients().get(rowIndex).set(columnIndex, newCoefficientValue);
         }
     }
 
     private void actualizeQuantities(
-            Tableau tableau, int crossValue, int rowIndex, int pivotQuantity) {
-        int oldQuantitiesValue = tableau.getConstants().get(rowIndex);
-        int newQuantitiesValue = oldQuantitiesValue - crossValue * pivotQuantity;
+            Tableau tableau, double crossValue, int rowIndex, double pivotQuantity) {
+        double oldQuantitiesValue = tableau.getConstants().get(rowIndex);
+        double newQuantitiesValue = oldQuantitiesValue - crossValue * pivotQuantity;
 
         tableau.getConstants().set(rowIndex, newQuantitiesValue);
     }

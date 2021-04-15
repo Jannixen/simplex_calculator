@@ -1,13 +1,9 @@
 package simplex.equations;
 
-import simplex.objects.RealVariable;
 import simplex.objects.Variable;
 import simplex.objects.VariableType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,8 +15,8 @@ public class ConstraintsReader {
     private ArrayList<Double> constants;
     private int currentConstraintEquationNumber;
 
-    ConstraintsReader(HashMap<RealVariable, ArrayList<Double>> realVariables, String constraintsInput) {
-        addRealVariables(realVariables);
+    ConstraintsReader(HashMap<Variable, ArrayList<Double>> Variables, String constraintsInput) {
+        addVariables(Variables);
         this.constants = new ArrayList<>();
         currentConstraintEquationNumber = 0;
         readConstraints(constraintsInput);
@@ -34,10 +30,10 @@ public class ConstraintsReader {
         return constants;
     }
 
-    private void addRealVariables(HashMap<RealVariable, ArrayList<Double>> realVariables) {
+    private void addVariables(HashMap<Variable, ArrayList<Double>> Variables) {
         variables = new HashMap<>();
-        for (RealVariable realVariable : realVariables.keySet()) {
-            variables.put(realVariable, realVariables.get(realVariable));
+        for (Variable Variable : Variables.keySet()) {
+            variables.put(Variable, Variables.get(Variable));
         }
     }
 
@@ -54,13 +50,14 @@ public class ConstraintsReader {
         EquationElementsSeparator separator = new EquationElementsSeparator(equation);
         addNewCoefficientsLineForAlreadyDeclared(separator.getCoefficientsPerNameMap());
         addAdditionalVariables(equation);
+        constants.add(valueChecker.checkNumber(separator.getConstant()));
     }
 
     private void addNewCoefficientsLineForAlreadyDeclared(HashMap<String, String> coefficientPerNameMap) {
         for (Variable variable : variables.keySet()) {
-            if (variable instanceof RealVariable && coefficientPerNameMap.containsKey(((RealVariable) variable).getName())) {
-                String variableName = coefficientPerNameMap.get(((RealVariable) variable).getName());
-                variables.get(variable).add(valueChecker.checkCost(variableName));
+            if (variable instanceof Variable && coefficientPerNameMap.containsKey(((Variable) variable).getName())) {
+                String variableName = coefficientPerNameMap.get(((Variable) variable).getName());
+                variables.get(variable).add(valueChecker.checkNumber(variableName));
             } else {
                 variables.get(variable).add(0.0);
             }
@@ -86,10 +83,11 @@ public class ConstraintsReader {
 
     private void addAdditionalVariable(VariableType varType) {
         Variable newVar = new Variable(varType.getCost());
-
+        if (varType == VariableType.SURPLUS) {
+            newVar = new Variable(varType.getCost(), true);
+        }
         ArrayList<Double> newVarCoefficientLine = complementCoefficientsAfterAddingVariable();
         newVarCoefficientLine.add(varType.getCoefficient());
-
         variables.put(newVar, newVarCoefficientLine);
     }
 

@@ -1,24 +1,25 @@
 package simplex.objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public class Tableau {
 
     private ArrayList<Variable> baseVariables;
     private ArrayList<Variable> nonBaseVariables;
-    private ArrayList<ArrayList<Integer>> coefficients;
-    private ArrayList<Integer> constants;
+    private ArrayList<ArrayList<Double>> coefficients;
+    private ArrayList<Double> constants;
     private ArrayList<Double> optimalityIndexes;
     private ArrayList<Double> dotProducts;
 
-    public Tableau() {
+    public Tableau(HashMap<Variable, ArrayList<Double>> variables, ArrayList<Double> constants) {
 
-        baseVariables = new ArrayList<>();
-        nonBaseVariables = new ArrayList<>();
-        coefficients = new ArrayList<>();
-        constants = new ArrayList<>();
-        optimalityIndexes = new ArrayList<>();
-        dotProducts = new ArrayList<>();
+        initiateBaseVariables(variables.keySet());
+        initiateNonBaseVariable(variables.keySet());
+        initiateCoefficients(variables);
+        this.constants = constants;
+        initiateOptimalityIndexes();
 
     }
 
@@ -30,11 +31,11 @@ public class Tableau {
         return nonBaseVariables;
     }
 
-    public ArrayList<ArrayList<Integer>> getCoefficients() {
+    public ArrayList<ArrayList<Double>> getCoefficients() {
         return coefficients;
     }
 
-    public ArrayList<Integer> getConstants() {
+    public ArrayList<Double> getConstants() {
         return constants;
     }
 
@@ -53,4 +54,41 @@ public class Tableau {
     public int getWidth() {
         return nonBaseVariables.size();
     }
+
+    private void initiateBaseVariables(Set<Variable> variables) {
+        baseVariables = new ArrayList<>();
+        for (Variable variable : variables) {
+            if (!variable.isRealVariable() && !variable.isSurplusVariable()) {
+                baseVariables.add(variable);
+            }
+        }
+    }
+
+    private void initiateNonBaseVariable(Set<Variable> variables) {
+        nonBaseVariables = new ArrayList<>();
+        nonBaseVariables.addAll(variables);
+    }
+
+
+    private void initiateCoefficients(HashMap<Variable, ArrayList<Double>> coefficientsList) {
+        this.coefficients = new ArrayList<>();
+        for (int i = 0; i < baseVariables.size(); i++) {
+            ArrayList<Double> row = new ArrayList<>();
+            for (ArrayList<Double> v : coefficientsList.values()) {
+                row.add(v.get(i));
+            }
+            coefficients.add(row);
+        }
+    }
+
+    private void initiateOptimalityIndexes() {
+        optimalityIndexes = new ArrayList<>();
+        dotProducts = new ArrayList<>();
+        int columnIndex;
+        for (columnIndex = 0; columnIndex < this.getWidth(); columnIndex++) {
+            optimalityIndexes.add(0.0);
+            dotProducts.add(0.0);
+        }
+    }
+
 }

@@ -1,29 +1,22 @@
 package simplex.equations;
 
-import simplex.objects.RealVariable;
+import simplex.objects.Tableau;
 import simplex.objects.Variable;
+import simplex.process.SimplexProcessCoordinator;
 
 import java.util.ArrayList;
 
 public class UserInputProcessor {
 
-
     public static void main(String[] args) {
-        String example = "2x1 + 3x2+ 4x3";
-        String example2 = "2x1 + 3x2+ 4x3 < 10 \n 3x2 + 5x3 >= 5";
+        String example = "5x1 + 10x3 + 8x2";
+        String example2 = "3x1 + 5x2 + 2x3 >= 60 \n 4x1 + 4x2 + 4x3 <= 72 \n 2x1 + 4x2 + 5x3 <= 100";
         ObjectiveReader objectiveReader = new ObjectiveReader(example);
-        for (Variable l : objectiveReader.getRealVariables().keySet()) {
-            if (l instanceof RealVariable)
-                System.out.print(((RealVariable) l).getName());
-        }
-       /* ConstraintsReader constraintReader = new ConstraintsReader(objectiveReader.getRealVariables(), example2);
-        for (ArrayList<Double> l : constraintReader.getVariables().values()) {
-            for (int i = 0; i < l.size(); i++) {
-                System.out.print(l.get(i));
-            }
-        }
-
-        */
+        ConstraintsReader constraintsReader = new ConstraintsReader(objectiveReader.getVariables(), example2);
+        Tableau newTableau = new Tableau(constraintsReader.getVariables(), constraintsReader.getConstants());
+        SimplexProcessCoordinator simplexCoordinator = new SimplexProcessCoordinator();
+        simplexCoordinator.conductSimplexProcess(newTableau,false);
     }
+
 
 }
