@@ -9,7 +9,7 @@ public class Tableau {
     private ArrayList<Variable> baseVariables;
     private ArrayList<Variable> nonBaseVariables;
     private ArrayList<ArrayList<Double>> coefficients;
-    private ArrayList<Double> constants;
+    private final ArrayList<Double> constants;
     private ArrayList<Double> optimalityIndexes;
     private ArrayList<Double> dotProducts;
 
