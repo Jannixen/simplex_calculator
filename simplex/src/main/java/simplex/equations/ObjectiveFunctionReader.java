@@ -1,6 +1,8 @@
 package simplex.equations;
 
 
+import communication.Instruction;
+import communication.InstructionsSender;
 import simplex.objects.Variable;
 
 import java.util.ArrayList;
@@ -8,35 +10,37 @@ import java.util.HashMap;
 
 import static simplex.equations.ValueChecker.valueChecker;
 
-public class ObjectiveReader {
+public class ObjectiveFunctionReader {
 
     private HashMap<Variable, ArrayList<Double>> Variables;
 
-    public ObjectiveReader(String objectiveInput) {
+    public ObjectiveFunctionReader(String userInput) {
         Variables = new HashMap<>();
-        readObjective(objectiveInput);
+        readObjectiveFunction(userInput);
     }
-
 
     public HashMap<Variable, ArrayList<Double>> getVariables() {
         return Variables;
     }
 
-    private void readObjective(String userInput) {
+    private void readObjectiveFunction(String userInput) {
+        if (userInput.isBlank()){
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NO_OBJECTIVE);
+        }
         EquationElementsSeparator newSeparator = new EquationElementsSeparator(userInput);
         for (String variableName : newSeparator.getCoefficientsPerNameMap().keySet()) {
-            addVariableFromObjective(variableName, newSeparator.getCoefficientsPerNameMap().get(variableName));
+            addVariableFromObjectiveFunction(variableName, newSeparator.getCoefficientsPerNameMap().get(variableName));
         }
     }
 
-    private void addVariableFromObjective(String rawVariableName, String rawVariableCost) {
+    private void addVariableFromObjectiveFunction(String rawVariableName, String rawVariableCost) {
         String variableName = valueChecker.checkName(rawVariableName);
         double variableCost = valueChecker.checkNumber(rawVariableCost);
         if (variableCost != 0 && variableName != null) {
             Variable newVariable = new Variable(variableCost, variableName);
             Variables.put(newVariable, new ArrayList<>());
         } else {
-            //TODO obsługa wyjątku
+           InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.BAD_NAME_OR_COST);
         }
     }
 

@@ -1,6 +1,6 @@
 package communication;
 
-import javafx.scene.text.Text;
+import static visual.window.ApplicationWindow.APPLICATION_WINDOW;
 
 public final class InstructionsSender {
 
@@ -10,13 +10,11 @@ public final class InstructionsSender {
         return instructionsSender;
     }
 
-    public void showUserInstruction(Instruction msg) {
-        Text text = new Text(msg.instruction);
-        //APPLICATION_WINDOW.textField.getChildren().add(text);
+    public void showInstructionForUser(Instruction msg) {
+        APPLICATION_WINDOW.getNotificationsPane().showNotification(msg.instruction);
     }
 
-    public void showUserInstruction(Instruction msg, int lineNumber) {
-        Text text = new Text(msg.instruction + " " + lineNumber);
-        //APPLICATION_WINDOW.textField.getChildren().add(text);
+    public void showResults(String results) {
+        APPLICATION_WINDOW.getNotificationsPane().showNotification(results);
     }
 }

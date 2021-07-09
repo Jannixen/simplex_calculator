@@ -1,5 +1,7 @@
 package simplex.equations;
 
+import communication.Instruction;
+import communication.InstructionsSender;
 import simplex.objects.Variable;
 import simplex.objects.VariableType;
 
@@ -15,11 +17,11 @@ public class ConstraintsReader {
     private ArrayList<Double> constants;
     private int currentConstraintEquationNumber;
 
-    ConstraintsReader(HashMap<Variable, ArrayList<Double>> Variables, String constraintsInput) {
+    ConstraintsReader(HashMap<Variable, ArrayList<Double>> Variables, String userInput) {
         addVariables(Variables);
         this.constants = new ArrayList<>();
         currentConstraintEquationNumber = 0;
-        readConstraints(constraintsInput);
+        readConstraints(userInput);
     }
 
     public HashMap<Variable, ArrayList<Double>> getVariables() {
@@ -37,8 +39,12 @@ public class ConstraintsReader {
         }
     }
 
-    private void readConstraints(String constraintsInput) {
-        Scanner constraintsInputScanner = new Scanner(constraintsInput);
+    private void readConstraints(String userInput) {
+        Scanner constraintsInputScanner = new Scanner(userInput);
+        if (!constraintsInputScanner.hasNext()){
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NO_CONSTRAINTS);
+            return;
+        }
         while (constraintsInputScanner.hasNextLine()) {
             readNextEquation(constraintsInputScanner);
         }
@@ -55,8 +61,8 @@ public class ConstraintsReader {
 
     private void addNewCoefficientsLineForAlreadyDeclared(HashMap<String, String> coefficientPerNameMap) {
         for (Variable variable : variables.keySet()) {
-            if (variable instanceof Variable && coefficientPerNameMap.containsKey(((Variable) variable).getName())) {
-                String variableName = coefficientPerNameMap.get(((Variable) variable).getName());
+            if (variable != null && coefficientPerNameMap.containsKey(variable.getName())) {
+                String variableName = coefficientPerNameMap.get(variable.getName());
                 variables.get(variable).add(valueChecker.checkNumber(variableName));
             } else {
                 variables.get(variable).add(0.0);
@@ -83,7 +89,7 @@ public class ConstraintsReader {
 
     private void addAdditionalVariable(VariableType varType) {
         Variable newVar = new Variable(varType.getCost());
-        if (varType == VariableType.SURPLUS) {
+        if (varType.equals(VariableType.ARTIFICIAL)) {
             newVar = new Variable(varType.getCost(), true);
         }
         ArrayList<Double> newVarCoefficientLine = complementCoefficientsAfterAddingVariable();

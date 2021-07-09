@@ -24,7 +24,7 @@ public class NotificationsPane extends TemplatePane {
     }
 
     private TextArea makeNotificationsArea() {
-        notificationArea = new TextArea("Tutaj wyświetli się komunikat.");
+        notificationArea = new TextArea("Results will be shown here.");
         notificationArea.layoutXProperty().bind(widthProperty().subtract(notificationArea.widthProperty()).divide(2));
         notificationArea.layoutYProperty().bind(heightProperty().subtract(notificationArea.heightProperty()).divide(2));
         notificationArea.setPrefHeight(NOTIFICATIONS_PANE_HEIGHT);

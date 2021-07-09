@@ -3,6 +3,7 @@ package simplex.process;
 import communication.Instruction;
 import communication.InstructionsSender;
 import simplex.objects.Tableau;
+import simplex.objects.Variable;
 
 public class SimplexProcessCoordinator {
 
@@ -17,21 +18,37 @@ public class SimplexProcessCoordinator {
     }
 
     public void conductSimplexProcess(Tableau tableau, boolean ifMaximization) {
-        indexCounter.calculateOptimalityIndexes(tableau);
-        for (int j = 0; j < tableau.getWidth(); j++) {
-            System.out.println(tableau.getOptimalityIndexes().get(j));
+        int numberTry = 0;
+        if (ifMaximization) {
+            customizeForMaximization(tableau);
         }
         do {
-            tableauUpdater.actualizeTableau(tableau);
-            indexCounter.calculateOptimalityIndexes(tableau);
-            for (int j = 0; j < tableau.getWidth(); j++) {
-                for (int i = 0; i < tableau.getLength(); i++) {
-                    System.out.println(tableau.getCoefficients().get(j).get(i));
-                    System.out.println(tableau.getOptimalityIndexes().get(i));
-                }
+            makeSimplexRound(tableau, ifMaximization);
+            if (numberTry == 100) {
+                InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.LONG_TIME);
             }
-        } while (!optimalityChecker.checkOptimalityForMinimization(tableau));
-        ResultsCreator resultsCreator = new ResultsCreator(tableau);
+            numberTry++;
+        } while (!optimalityChecker.checkOptimality(tableau, ifMaximization) && numberTry < 10000);
+        if (numberTry > 10000) {
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.UNSOLVABLE);
+        }
+        new ResultsCreator(tableau);
     }
 
+    private void makeSimplexRound(Tableau tableau, boolean ifMaximization) {
+        try {
+            indexCounter.calculateOptimalityIndexes(tableau);
+            tableauUpdater.actualizeTableau(tableau, ifMaximization);
+        } catch (ArrayIndexOutOfBoundsException outOfBound) {
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.UNSOLVABLE);
+        }
+    }
+
+    private void customizeForMaximization(Tableau tableau) {
+        for (Variable variable : tableau.getBaseVariables()) {
+            if (variable.isArtificialVariable()) {
+                variable.setCost(-variable.getCost());
+            }
+        }
+    }
 }

@@ -1,48 +1,54 @@
 package simplex.process;
 
-import simplex.output.ResultFileCreator;
+import communication.InstructionsSender;
 import simplex.objects.Tableau;
 import simplex.objects.Variable;
 
-import java.util.ArrayList;
 
 public class ResultsCreator {
 
+    private String results;
+
     ResultsCreator(Tableau tableau) {
-        ArrayList<String> results = createResults(tableau);
-        initiateResultFile(results);
+        String results = createResults(tableau);
+        InstructionsSender.getInstructionSender().showResults(results);
     }
 
-    private ArrayList<String> createResults(Tableau tableau) {
-        ArrayList<String> createdResults = new ArrayList<>();
+    private String createResults(Tableau tableau) {
+        results = "";
+        double totalCost = readResultsFromTableau(tableau);
+        totalCost = Math.round(totalCost * 100.00) / 100.00;
+        results += "Entire cost: ";
+        results += String.valueOf(totalCost);
+        return results;
+    }
+
+    private double readResultsFromTableau(Tableau tableau){
         double totalCost = 0;
 
-        for (int i = 0; i < tableau.getBaseVariables().size(); i++) {
+        for (int row = 0; row < tableau.getLength(); row++) {
 
-            totalCost += makeResultsLine(tableau, i, createdResults);
+            totalCost += makeResultsLine(tableau, row);
         }
-        totalCost = Math.round(totalCost * 100.00) / 100.00;
-        createdResults.add(String.valueOf(totalCost));
-        return createdResults;
+
+        return totalCost;
     }
 
-    private double makeResultsLine(Tableau tableau, int lineIndex, ArrayList<String> results) {
+    private double makeResultsLine(Tableau tableau, int row) {
         double transaction = 0;
-        Variable baseVariable = tableau.getBaseVariables().get(lineIndex);
+        Variable baseVariable = tableau.getBaseVariables().get(row);
 
         if (baseVariable.isRealVariable()) {
-            transaction = baseVariable.getCost() * tableau.getConstants().get(lineIndex);
-            transaction = Math.round(transaction * 100.00) / 100.00;
-
-            results.add(baseVariable.getName());
-            results.add(String.valueOf(tableau.getConstants().get(lineIndex)));
-            results.add(String.valueOf(baseVariable.getCost()));
-            results.add(String.valueOf(transaction));
+            transaction = baseVariable.getCost() * tableau.getConstants().get(row);
+            results += baseVariable.getName();
+            results += " [Cost = " + tableau.getConstants().get(row) + " * " +
+                    baseVariable.getCost() + " = ";
+            results += transaction + "] \n";
         }
         return transaction;
     }
 
-    private void initiateResultFile(ArrayList<String> results) {
-        new ResultFileCreator(results);
-    }
+
 }
+
+

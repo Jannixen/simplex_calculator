@@ -1,5 +1,7 @@
 package visual.window.panes;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -7,6 +9,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import simplex.equations.UserInputProcessor;
 
 import java.io.FileNotFoundException;
 
@@ -20,20 +23,21 @@ public class EquationsPane extends TemplateIconPane {
     }
 
     private void makeEquationPane() {
-        getChildren().add(makeWriteObjectiveTextArea());
-        getChildren().add(makeWriteConstraintsTextArea());
+        TextArea objectiveTextArea = makeWriteObjectiveTextArea();
+        TextArea constraintsTextArea = makeWriteConstraintsTextArea();
+        getChildren().add(objectiveTextArea);
+        getChildren().add(constraintsTextArea);
         getChildren().add(makeObjectiveLabel());
         getChildren().add(makeConstraintLabel());
-        getChildren().add(makeSimplexStartButton());
+        getChildren().add(makeSimplexStartButton(constraintsTextArea, objectiveTextArea));
         getChildren().add(makeMinMaxSwitcher());
     }
-
 
 
     private Label makeObjectiveLabel() {
         Label instruction = new Label("Objective function:");
 
-        instruction.setFont(Font.font("Verdana",FontWeight.BOLD, FontPosture.ITALIC, 10));
+        instruction.setFont(Font.font("Verdana", FontWeight.BOLD, FontPosture.ITALIC, 10));
         instruction.setTextAlignment(TextAlignment.LEFT);
         instruction.layoutXProperty().bind(widthProperty().subtract(instruction.widthProperty()).divide(2));
         instruction.layoutYProperty().bind(heightProperty().subtract(instruction.heightProperty()).divide(14));
@@ -42,7 +46,7 @@ public class EquationsPane extends TemplateIconPane {
     }
 
     private TextArea makeWriteObjectiveTextArea() {
-        TextArea textArea = new TextArea();
+        TextArea textArea = new TextArea("5x1 + 10x2 + 8x3");
 
         textArea.layoutXProperty().bind(widthProperty().subtract(textArea.widthProperty()).divide(2));
         textArea.layoutYProperty().bind(heightProperty().subtract(textArea.heightProperty()).divide(6));
@@ -56,7 +60,7 @@ public class EquationsPane extends TemplateIconPane {
     private Label makeConstraintLabel() {
         Label instruction = new Label("Constraints:");
 
-        instruction.setFont(Font.font("Verdana",  FontWeight.BOLD, FontPosture.ITALIC, 10));
+        instruction.setFont(Font.font("Verdana", FontWeight.BOLD, FontPosture.ITALIC, 10));
         instruction.setTextAlignment(TextAlignment.LEFT);
         instruction.layoutXProperty().bind(widthProperty().subtract(instruction.widthProperty()).divide(2));
         instruction.layoutYProperty().bind(heightProperty().subtract(instruction.heightProperty()).divide(3));
@@ -65,7 +69,7 @@ public class EquationsPane extends TemplateIconPane {
     }
 
     private TextArea makeWriteConstraintsTextArea() {
-        TextArea textArea = new TextArea("Przykładowe równanie: \n1x1 + 2x2 + 3x3 < 15 \n3x1 + 6x2 + 7x3 <= 20 ");
+        TextArea textArea = new TextArea("3x1 + 5x2 + 2x3 >= 60 \n 4x1 + 4x2 + 4x3 <= 72 \n 2x1 + 4x2 + 5x3 <= 100");
 
         textArea.layoutXProperty().bind(widthProperty().subtract(textArea.widthProperty()).divide(2));
         textArea.layoutYProperty().bind(heightProperty().subtract(textArea.heightProperty()).divide(1.5));
@@ -93,7 +97,7 @@ public class EquationsPane extends TemplateIconPane {
     }
 
 
-    private Button makeSimplexStartButton() {
+    private Button makeSimplexStartButton(TextArea constraintsTextArea, TextArea objectiveTextArea) {
         Button button = new Button("Start process");
         try {
             button = new Button("Start process", fetchIconImage("src/main/resources/calculator_icon.png", 30));
@@ -102,7 +106,18 @@ public class EquationsPane extends TemplateIconPane {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        button.setOnAction(makeEventHandler(constraintsTextArea, objectiveTextArea));
         return button;
+    }
+
+    private EventHandler makeEventHandler(TextArea constraintsTextArea, TextArea objectiveTextArea) {
+        EventHandler<ActionEvent> buttonHandler = event -> {
+            String constraintsString = constraintsTextArea.getText();
+            String objectiveString = objectiveTextArea.getText();
+            UserInputProcessor userInputProcessor = new UserInputProcessor(objectiveString, constraintsString);
+            event.consume();
+        };
+        return buttonHandler;
     }
 
 

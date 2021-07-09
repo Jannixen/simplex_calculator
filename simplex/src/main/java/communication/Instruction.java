@@ -2,30 +2,15 @@ package communication;
 
 
 public enum Instruction {
-    BAD_HEADER("W pliku nie ma poprawnych nagłówków."),
-    NO_MANUFACTURERS_TABLE("Błąd wczytywania producentów."),
-    NO_PHARMACIES_TABLE("Błąd wczytywania aptek."),
-    NO_CONNECTIONS_TABLE("Błąd wczytywania połączeń."),
-    NO_FILE("Brak pliku."),
-    CLOSED_INPUT_CHOOSER_WINDOW("Nie wybrano pliku wejściowego."),
-    CLOSED_OUTPUT_CHOOSER_WINDOW("Nie wybrano pliku wyjściowego."),
-
-    BAD_ID_MANUFACTURER(
-            "ID producenta w tabeli połączeń nie ma odwzorowania w tabeli producenci. Błąd w linii: "),
-    BAD_ID_PHARMACY(
-            "ID apteki w tabeli połączeń nie ma odwzorowania w tabeli apteki. Błąd w linii: "),
-
-    DUPLICATE("Id powinno być unikalne. Id powtarza się w linii: "),
-    SOME_UNNEEDED_VALUE("Nieprawidłowy koniec pliku. Napotkano na niepotrzebną wartość."),
-    LACK_CONNECTION_FOR_EVERY_PAIR(
-            " Plik powinien zawierać połączenie dla każdej pary Apteka - Producent."),
-    HIGHER_DEMAND_THAN_SUPPLY(
-            " Zapotrzebowanie aptek musi być niższe niż suma całkowitej produkcji."),
-    LIMITS_LOWER_THAN_DEMAND(
-            " Suma dziennych możliwych dostaw wynikających z umów musi być taka jak lub większa niż popyt dla każdej apteki. Błąd dla apteki: "),
-    MINIMIZATION_IMPOSSIBLE("Minimalizacja niemożliwa."),
-    LONG_FILE("Ze względu na rozmiar pliku generowanie wyników może potrwać nieco dłużej."),
-    SAVED_FILE("Plik został zapisany. Możesz zamknąć aplikację albo wybrać kolejny plik.");
+    BAD_VARIABLE_OBJECTIVE("Variable is not properly written."),
+    CONSTANT_LACK("Lack of constant."),
+    NO_CONSTRAINTS("You have to write some constraint equations"),
+    NO_OBJECTIVE("You have to write objective function"),
+    NOT_NEEDED_VALUE("Some unneeded value is present in equations."),
+    NOT_PROPER_EQUATION("Some equation has improper form. Please write it again."),
+    BAD_NAME_OR_COST("Variable name should be not longer than 50 and cost value has to be lower than 100000."),
+    LONG_TIME("Solving problem will take some time. Please wait."),
+    UNSOLVABLE("Problem cannot be solved.");
 
     public final String instruction;
 

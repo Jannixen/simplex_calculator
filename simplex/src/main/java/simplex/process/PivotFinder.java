@@ -18,7 +18,7 @@ public class PivotFinder {
         return pivotColumnIndex;
     }
 
-    int findMinimumOptimalityIndex(Tableau tableau){
+    int findMinimumOptimalityIndex(Tableau tableau) {
         double minOptimality = Integer.MAX_VALUE;
         int pivotColumnIndex = Integer.MAX_VALUE;
 
@@ -32,14 +32,16 @@ public class PivotFinder {
         return pivotColumnIndex;
     }
 
-    int findMinimumQuantity(Tableau tableau, int pivotColumnNumber) {
-        double minQuantity = Integer.MAX_VALUE;
+    int findMinimumMinRatio(Tableau tableau, int pivotColumnNumber) {
+        double minMinRatio = Integer.MAX_VALUE;
         int pivotRowIndex = Integer.MAX_VALUE;
+        double minRatioCalculation;
 
         for (int rowIndex = 0; rowIndex < tableau.getLength(); rowIndex++) {
-            if (tableau.getCoefficients().get(rowIndex).get(pivotColumnNumber) == 1) {
-                if (tableau.getConstants().get(rowIndex) < minQuantity) {
-                    minQuantity = tableau.getConstants().get(rowIndex);
+            if (tableau.getCoefficients().get(rowIndex).get(pivotColumnNumber) != 0) {
+                minRatioCalculation = tableau.getConstants().get(rowIndex) / tableau.getCoefficients().get(rowIndex).get(pivotColumnNumber);
+                if (minRatioCalculation  < minMinRatio & minRatioCalculation >0) {
+                    minMinRatio = minRatioCalculation;
                     pivotRowIndex = rowIndex;
                 }
             }

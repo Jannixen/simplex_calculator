@@ -20,6 +20,7 @@ public class OptimalityIndexCounter {
 
     private double calculateDotProduct(Tableau tableau, int columnNumber) {
         double dotProduct = 0;
+
         for (int rowNumber = 0; rowNumber < tableau.getLength(); rowNumber++) {
             dotProduct +=
                     tableau.getCoefficients().get(rowNumber).get(columnNumber)

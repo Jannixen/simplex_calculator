@@ -1,10 +1,12 @@
 package simplex.equations;
 
+import communication.Instruction;
+import communication.InstructionsSender;
+
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class EquationElementsSeparator {
-
 
     HashMap<String, String> coefficientsPerNameMap = new HashMap<>();
     String constant;
@@ -13,7 +15,7 @@ public class EquationElementsSeparator {
         separateConstant(strEquation);
     }
 
-    public HashMap<String, String> getCoefficientsPerNameMap() {
+    HashMap<String, String> getCoefficientsPerNameMap() {
         return coefficientsPerNameMap;
     }
 
@@ -25,6 +27,10 @@ public class EquationElementsSeparator {
         String constantDelimiter = "=|<=|>=|<|>";
         Scanner constantSeparatingScanner = new Scanner(strEquation).useDelimiter(constantDelimiter);
         constantSeparatingScanner.findAll(constantDelimiter);
+        if (!constantSeparatingScanner.hasNext()){
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_PROPER_EQUATION);
+            return;
+        }
         while (constantSeparatingScanner.hasNext()) {
             separateVariables(constantSeparatingScanner.next());
             if (constantSeparatingScanner.hasNext()) {
@@ -34,8 +40,12 @@ public class EquationElementsSeparator {
     }
 
     private void separateVariables(String strEquation) {
-        String variablesDelimiter = "\\+|-";
+        String variablesDelimiter = "[+\\-]";
         Scanner variablesSeparatingScanner = new Scanner(strEquation).useDelimiter(variablesDelimiter);
+        if (!variablesSeparatingScanner.hasNext()){
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_PROPER_EQUATION);
+            return;
+        }
         while (variablesSeparatingScanner.hasNext()) {
             String strVariable = variablesSeparatingScanner.next();
             separateIntoCoefficientAndName(strVariable.strip());
@@ -54,7 +64,7 @@ public class EquationElementsSeparator {
         else if (nameSeparatingScanner.hasNext() && !coefficientSeparatingScanner.hasNext()) {
             coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), "1");
         } else if (coefficientSeparatingScanner.hasNext() && !nameSeparatingScanner.hasNext()) {
-            //TODO wyjątek
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_NEEDED_VALUE);
         }
     }
 

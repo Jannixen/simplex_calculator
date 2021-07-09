@@ -2,16 +2,15 @@ package visual.window;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import visual.window.panes.EquationsPane;
-import visual.window.panes.HeaderPane;
-import visual.window.panes.NotificationsPane;
-import visual.window.panes.WindowPane;
+import visual.window.panes.*;
 
 public final class ApplicationWindow extends Stage {
 
     public static final ApplicationWindow APPLICATION_WINDOW = new ApplicationWindow();
 
+    private NotificationsPane notificationsPane;
     private Scene scene;
     private Group root = new Group();
 
@@ -26,15 +25,18 @@ public final class ApplicationWindow extends Stage {
 
     private void buildWindow() {
         WindowPane windowPane = new WindowPane();
+        notificationsPane = new NotificationsPane();
 
         windowPane.getChildren().add(new HeaderPane());
         windowPane.getChildren().add(new EquationsPane());
-        windowPane.getChildren().add(new NotificationsPane());
+        windowPane.getChildren().add(notificationsPane);
 
         this.root.getChildren().add(windowPane);
         this.setScene(scene);
         this.show();
     }
 
-
+    public NotificationsPane getNotificationsPane() {
+        return notificationsPane;
+    }
 }

@@ -2,6 +2,7 @@ package simplex.objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class Tableau {
@@ -15,8 +16,8 @@ public class Tableau {
 
     public Tableau(HashMap<Variable, ArrayList<Double>> variables, ArrayList<Double> constants) {
 
-        initiateBaseVariables(variables.keySet());
         initiateNonBaseVariable(variables.keySet());
+        initiateBaseVariables(variables);
         initiateCoefficients(variables);
         this.constants = constants;
         initiateOptimalityIndexes();
@@ -55,11 +56,13 @@ public class Tableau {
         return nonBaseVariables.size();
     }
 
-    private void initiateBaseVariables(Set<Variable> variables) {
+    private void initiateBaseVariables(HashMap<Variable, ArrayList<Double>> coefficientsList) {
         baseVariables = new ArrayList<>();
-        for (Variable variable : variables) {
-            if (!variable.isRealVariable() && !variable.isSurplusVariable()) {
-                baseVariables.add(variable);
+        for (int i = 0; i < coefficientsList.values().iterator().next().size(); i++) {
+            for (Map.Entry<Variable, ArrayList<Double>> entry : coefficientsList.entrySet()) {
+                if (entry.getValue().get(i) == 1 & !entry.getKey().isRealVariable()) {
+                    baseVariables.add(entry.getKey());
+                }
             }
         }
     }
@@ -72,7 +75,7 @@ public class Tableau {
 
     private void initiateCoefficients(HashMap<Variable, ArrayList<Double>> coefficientsList) {
         this.coefficients = new ArrayList<>();
-        for (int i = 0; i < baseVariables.size(); i++) {
+        for (int i = 0; i < coefficientsList.values().iterator().next().size(); i++) {
             ArrayList<Double> row = new ArrayList<>();
             for (ArrayList<Double> v : coefficientsList.values()) {
                 row.add(v.get(i));
@@ -89,6 +92,31 @@ public class Tableau {
             optimalityIndexes.add(0.0);
             dotProducts.add(0.0);
         }
+    }
+
+
+    public void printTableau() {
+        for (int i = 0; i < this.getWidth(); i++) {
+            System.out.print(this.getNonBaseVariables().get(i).getCost() + " ");
+        }
+        System.out.println();
+        for (int i = 0; i < this.getLength(); i++) {
+            System.out.print(this.getBaseVariables().get(i).getCost() + " ");
+            System.out.print(this.getConstants().get(i)+ " ");
+            for (int j = 0; j < this.getWidth(); j++) {
+                System.out.print(this.getCoefficients().get(i).get(j) + " ");
+            }
+            System.out.println();
+        }
+        for (int i = 0; i < this.getWidth(); i++) {
+            System.out.print(this.getDotProducts().get(i) + " ");
+        }
+        System.out.println();
+        for (int i = 0; i < this.getWidth(); i++) {
+            System.out.print(this.getOptimalityIndexes().get(i) + " ");
+        }
+        System.out.println();
+        System.out.println("----------------------");
     }
 
 }
