@@ -8,7 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-abstract class TemplateIconPane extends TemplatePane{
+abstract class TemplateIconPane extends TemplatePane {
 
     TemplateIconPane(int x, int y, int width, int height, Color color, boolean ifWithBorder) {
         super(x, y, width, height, color, ifWithBorder);

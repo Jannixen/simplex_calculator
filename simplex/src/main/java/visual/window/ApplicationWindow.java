@@ -2,17 +2,19 @@ package visual.window;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import visual.window.panes.*;
+import visual.window.panes.EquationsPane;
+import visual.window.panes.HeaderPane;
+import visual.window.panes.NotificationsPane;
+import visual.window.panes.WindowPane;
 
 public final class ApplicationWindow extends Stage {
 
     public static final ApplicationWindow APPLICATION_WINDOW = new ApplicationWindow();
 
     private NotificationsPane notificationsPane;
-    private Scene scene;
-    private Group root = new Group();
+    private final Scene scene;
+    private final Group root = new Group();
 
     private ApplicationWindow() {
         this.scene = new Scene(this.root);

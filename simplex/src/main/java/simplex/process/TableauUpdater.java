@@ -14,7 +14,7 @@ public class TableauUpdater {
         int pivotColumnIndex;
         int pivotRowIndex;
 
-        if (ifMaximization){
+        if (ifMaximization) {
             pivotColumnIndex = pivotFinder.findMinimumOptimalityIndex(tableau);
         } else {
             pivotColumnIndex = pivotFinder.findMaximumOptimalityIndex(tableau);

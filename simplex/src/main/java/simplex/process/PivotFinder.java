@@ -40,7 +40,7 @@ public class PivotFinder {
         for (int rowIndex = 0; rowIndex < tableau.getLength(); rowIndex++) {
             if (tableau.getCoefficients().get(rowIndex).get(pivotColumnNumber) != 0) {
                 minRatioCalculation = tableau.getConstants().get(rowIndex) / tableau.getCoefficients().get(rowIndex).get(pivotColumnNumber);
-                if (minRatioCalculation  < minMinRatio & minRatioCalculation >0) {
+                if (minRatioCalculation < minMinRatio & minRatioCalculation > 0) {
                     minMinRatio = minRatioCalculation;
                     pivotRowIndex = rowIndex;
                 }

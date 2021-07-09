@@ -12,7 +12,7 @@ import static simplex.equations.ValueChecker.valueChecker;
 
 public class ObjectiveFunctionReader {
 
-    private HashMap<Variable, ArrayList<Double>> Variables;
+    private final HashMap<Variable, ArrayList<Double>> Variables;
 
     public ObjectiveFunctionReader(String userInput) {
         Variables = new HashMap<>();
@@ -24,7 +24,7 @@ public class ObjectiveFunctionReader {
     }
 
     private void readObjectiveFunction(String userInput) {
-        if (userInput.isBlank()){
+        if (userInput.isBlank()) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NO_OBJECTIVE);
         }
         EquationElementsSeparator newSeparator = new EquationElementsSeparator(userInput);
@@ -40,7 +40,7 @@ public class ObjectiveFunctionReader {
             Variable newVariable = new Variable(variableCost, variableName);
             Variables.put(newVariable, new ArrayList<>());
         } else {
-           InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.BAD_NAME_OR_COST);
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.BAD_NAME_OR_COST);
         }
     }
 

@@ -27,7 +27,7 @@ public class EquationElementsSeparator {
         String constantDelimiter = "=|<=|>=|<|>";
         Scanner constantSeparatingScanner = new Scanner(strEquation).useDelimiter(constantDelimiter);
         constantSeparatingScanner.findAll(constantDelimiter);
-        if (!constantSeparatingScanner.hasNext()){
+        if (!constantSeparatingScanner.hasNext()) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_PROPER_EQUATION);
             return;
         }
@@ -42,7 +42,7 @@ public class EquationElementsSeparator {
     private void separateVariables(String strEquation) {
         String variablesDelimiter = "[+\\-]";
         Scanner variablesSeparatingScanner = new Scanner(strEquation).useDelimiter(variablesDelimiter);
-        if (!variablesSeparatingScanner.hasNext()){
+        if (!variablesSeparatingScanner.hasNext()) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_PROPER_EQUATION);
             return;
         }
@@ -60,8 +60,7 @@ public class EquationElementsSeparator {
 
         if (nameSeparatingScanner.hasNext() && coefficientSeparatingScanner.hasNext()) {
             coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), coefficientSeparatingScanner.next().strip());
-        }
-        else if (nameSeparatingScanner.hasNext() && !coefficientSeparatingScanner.hasNext()) {
+        } else if (nameSeparatingScanner.hasNext() && !coefficientSeparatingScanner.hasNext()) {
             coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), "1");
         } else if (coefficientSeparatingScanner.hasNext() && !nameSeparatingScanner.hasNext()) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_NEEDED_VALUE);

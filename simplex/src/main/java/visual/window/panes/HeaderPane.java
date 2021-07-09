@@ -18,7 +18,7 @@ public class HeaderPane extends TemplateIconPane {
         makeHeaderPane();
     }
 
-    private void makeHeaderPane(){
+    private void makeHeaderPane() {
         getChildren().add(makeTitleTextLabel("Simplex Method Calculator"));
         getChildren().add(makeIconImageView());
     }
@@ -29,7 +29,7 @@ public class HeaderPane extends TemplateIconPane {
         titleText.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
         titleText.setTextAlignment(TextAlignment.CENTER);
         titleText.setWrapText(true);
-        titleText.setMaxSize(150,150);
+        titleText.setMaxSize(150, 150);
         titleText.layoutXProperty().bind(widthProperty().subtract(titleText.widthProperty()).divide(1.2));
         titleText.layoutYProperty().bind(heightProperty().subtract(titleText.heightProperty()).divide(2));
         return titleText;

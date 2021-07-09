@@ -1,7 +1,5 @@
 package simplex.objects;
 
-import java.util.Objects;
-
 public class Variable {
 
     protected final String name;
@@ -27,7 +25,7 @@ public class Variable {
         this.cost = cost;
         this.name = name;
         ifRealVariable = true;
-        ifArtificialVariable=false;
+        ifArtificialVariable = false;
     }
 
 

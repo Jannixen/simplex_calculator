@@ -23,7 +23,7 @@ public class ResultsCreator {
         return results;
     }
 
-    private double readResultsFromTableau(Tableau tableau){
+    private double readResultsFromTableau(Tableau tableau) {
         double totalCost = 0;
 
         for (int row = 0; row < tableau.getLength(); row++) {

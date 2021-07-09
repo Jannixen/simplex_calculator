@@ -102,7 +102,7 @@ public class Tableau {
         System.out.println();
         for (int i = 0; i < this.getLength(); i++) {
             System.out.print(this.getBaseVariables().get(i).getCost() + " ");
-            System.out.print(this.getConstants().get(i)+ " ");
+            System.out.print(this.getConstants().get(i) + " ");
             for (int j = 0; j < this.getWidth(); j++) {
                 System.out.print(this.getCoefficients().get(i).get(j) + " ");
             }

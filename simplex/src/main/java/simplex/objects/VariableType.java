@@ -5,8 +5,8 @@ public enum VariableType {
     SLACK(0, 1.0), ARTIFICIAL(100000, 1.0),
     SURPLUS(0, -1.0);
 
-    private double cost;
-    private double coefficient;
+    private final double cost;
+    private final double coefficient;
 
     VariableType(double cost, double coefficient) {
         this.cost = cost;

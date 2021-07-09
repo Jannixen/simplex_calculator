@@ -5,7 +5,10 @@ import communication.InstructionsSender;
 import simplex.objects.Variable;
 import simplex.objects.VariableType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +17,7 @@ import static simplex.equations.ValueChecker.valueChecker;
 public class ConstraintsReader {
 
     private HashMap<Variable, ArrayList<Double>> variables;
-    private ArrayList<Double> constants;
+    private final ArrayList<Double> constants;
     private int currentConstraintEquationNumber;
 
     ConstraintsReader(HashMap<Variable, ArrayList<Double>> Variables, String userInput) {
@@ -41,7 +44,7 @@ public class ConstraintsReader {
 
     private void readConstraints(String userInput) {
         Scanner constraintsInputScanner = new Scanner(userInput);
-        if (!constraintsInputScanner.hasNext()){
+        if (!constraintsInputScanner.hasNext()) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NO_CONSTRAINTS);
             return;
         }
