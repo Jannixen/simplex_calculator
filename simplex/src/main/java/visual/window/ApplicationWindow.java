@@ -18,6 +18,7 @@ public final class ApplicationWindow extends Stage {
 
     private ApplicationWindow() {
         this.scene = new Scene(this.root);
+        setTitle("Simplex Calculator");
         buildWindow();
     }
 

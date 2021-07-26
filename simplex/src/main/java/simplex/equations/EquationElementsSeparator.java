@@ -25,49 +25,61 @@ public class EquationElementsSeparator {
 
     private void separateConstant(String strEquation) {
         String constantDelimiter = "=|<=|>=|<|>";
-        Scanner constantSeparatingScanner = new Scanner(strEquation).useDelimiter(constantDelimiter);
-        constantSeparatingScanner.findAll(constantDelimiter);
-        if (!constantSeparatingScanner.hasNext()) {
+        String[] afterSplit = strEquation.split(constantDelimiter);
+
+        if (afterSplit.length < 2) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_PROPER_EQUATION);
-            return;
-        }
-        while (constantSeparatingScanner.hasNext()) {
-            separateVariables(constantSeparatingScanner.next());
-            if (constantSeparatingScanner.hasNext()) {
-                constant = constantSeparatingScanner.next().strip();
-            }
+        } else {
+            separateVariables(afterSplit[0]);
+            constant = afterSplit[1].strip();
         }
     }
 
     private void separateVariables(String strEquation) {
-        String variablesDelimiter = "[+\\-]";
-        Scanner variablesSeparatingScanner = new Scanner(strEquation).useDelimiter(variablesDelimiter);
-        if (!variablesSeparatingScanner.hasNext()) {
+        String variablesDelimiter = "((?<=\\+)|(?=\\+))|((?<=-)|(?=-))";
+        String[] afterSplit = strEquation.split(variablesDelimiter);
+
+        if (afterSplit.length == 0) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_PROPER_EQUATION);
             return;
         }
-        while (variablesSeparatingScanner.hasNext()) {
-            String strVariable = variablesSeparatingScanner.next();
-            separateIntoCoefficientAndName(strVariable.strip());
+        if (afterSplit.length % 2 == 1) {
+            separateIntoCoefficientAndName("+", afterSplit[0].strip());
+            for (int i = 1; i < afterSplit.length - 1; i = i + 2) {
+                separateIntoCoefficientAndName(afterSplit[i].strip(), afterSplit[i + 1].strip());
+            }
+        }else {
+            for (int i = 0; i < afterSplit.length - 1; i = i + 2) {
+                separateIntoCoefficientAndName(afterSplit[i].strip(), afterSplit[i + 1].strip());
+            }
         }
     }
 
-    private void separateIntoCoefficientAndName(String strVariable) {
+
+    private void separateIntoCoefficientAndName(String sign, String strVariable) {
         String nameDelimiter = "^\\d+";
         String coefficientDelimiter = "[a-z]\\d+";
+
         Scanner nameSeparatingScanner = new Scanner(strVariable).useDelimiter(nameDelimiter);
         Scanner coefficientSeparatingScanner = new Scanner(strVariable).useDelimiter(coefficientDelimiter);
 
-        if (nameSeparatingScanner.hasNext() && coefficientSeparatingScanner.hasNext()) {
-            coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), coefficientSeparatingScanner.next().strip());
-        } else if (nameSeparatingScanner.hasNext() && !coefficientSeparatingScanner.hasNext()) {
-            coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), "1");
-        } else if (coefficientSeparatingScanner.hasNext() && !nameSeparatingScanner.hasNext()) {
+        if (!nameSeparatingScanner.hasNext()) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_NEEDED_VALUE);
+        } else if (!coefficientSeparatingScanner.hasNext()) {
+            if (sign.equals("-")) {
+                coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), "-1");
+            } else {
+                coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), "1");
+            }
+        } else {
+            if (sign.equals("-")) {
+                coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), "-" + coefficientSeparatingScanner.next().strip());
+            } else {
+                coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), coefficientSeparatingScanner.next().strip());
+            }
         }
+
     }
-
 }
-
 
 

@@ -17,6 +17,9 @@ import static visual.window.panes.PanesProperties.*;
 
 public class EquationsPane extends TemplateIconPane {
 
+    ToggleButton toggleButtonMin;
+    ToggleButton toggleButtonMax;
+
     public EquationsPane() {
         super(EQUATIONS_PANE_POSITION_X, EQUATIONS_PANE_POSITION_Y, EQUATIONS_PANE_WIDTH, EQUATIONS_PANE_HEIGHT, Color.AZURE.darker(), false);
         makeEquationPane();
@@ -82,10 +85,11 @@ public class EquationsPane extends TemplateIconPane {
 
 
     private HBox makeMinMaxSwitcher() {
+        toggleButtonMin = new ToggleButton("Minimization");
+        toggleButtonMax = new ToggleButton("Maximization");
+
         ToggleGroup minMaxSwitcherGroup = new ToggleGroup();
 
-        ToggleButton toggleButtonMin = new ToggleButton("Minimization");
-        ToggleButton toggleButtonMax = new ToggleButton("Maximization");
         toggleButtonMin.setToggleGroup(minMaxSwitcherGroup);
         toggleButtonMax.setToggleGroup(minMaxSwitcherGroup);
 
@@ -110,14 +114,14 @@ public class EquationsPane extends TemplateIconPane {
         return button;
     }
 
-    private EventHandler makeEventHandler(TextArea constraintsTextArea, TextArea objectiveTextArea) {
-        EventHandler<ActionEvent> buttonHandler = event -> {
+    private EventHandler<ActionEvent> makeEventHandler(TextArea constraintsTextArea, TextArea objectiveTextArea) {
+        return event -> {
             String constraintsString = constraintsTextArea.getText();
             String objectiveString = objectiveTextArea.getText();
-            UserInputProcessor userInputProcessor = new UserInputProcessor(objectiveString, constraintsString);
+            boolean ifMaximization = toggleButtonMax.isSelected();
+            new UserInputProcessor(objectiveString, constraintsString, ifMaximization);
             event.consume();
         };
-        return buttonHandler;
     }
 
 
