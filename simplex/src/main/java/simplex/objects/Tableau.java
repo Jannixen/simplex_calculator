@@ -119,4 +119,18 @@ public class Tableau {
         System.out.println("----------------------");
     }
 
+    public double getTotalCost() {
+        double transaction;
+        double totalCost = 0;
+
+        for (int row = 0; row < getLength(); row++) {
+            Variable baseVariable = baseVariables.get(row);
+            if (baseVariable.isRealVariable()) {
+                transaction = baseVariable.getCost() * constants.get(row);
+                totalCost += transaction;
+            }
+        }
+        return totalCost;
+    }
+
 }

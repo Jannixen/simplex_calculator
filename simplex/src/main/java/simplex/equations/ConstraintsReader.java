@@ -20,7 +20,7 @@ public class ConstraintsReader {
     private final ArrayList<Double> constants;
     private int currentConstraintEquationNumber;
 
-    ConstraintsReader(HashMap<Variable, ArrayList<Double>> Variables, String userInput) {
+    public ConstraintsReader(HashMap<Variable, ArrayList<Double>> Variables, String userInput) {
         addVariables(Variables);
         this.constants = new ArrayList<>();
         currentConstraintEquationNumber = 0;
@@ -54,11 +54,12 @@ public class ConstraintsReader {
     }
 
     private void readNextEquation(Scanner constraintsInputScanner) {
-        String equation = constraintsInputScanner.nextLine();
+        String strEquation = constraintsInputScanner.nextLine();
         currentConstraintEquationNumber++;
-        EquationElementsSeparator separator = new EquationElementsSeparator(equation);
+        EquationElementsSeparator separator = new EquationElementsSeparator();
+        InstructionsSender.getInstructionSender().showInstructionForUser(separator.separate(strEquation));
         addNewCoefficientsLineForAlreadyDeclared(separator.getCoefficientsPerNameMap());
-        addAdditionalVariables(equation);
+        addAdditionalVariables(strEquation);
         constants.add(valueChecker.checkNumber(separator.getConstant()));
     }
 

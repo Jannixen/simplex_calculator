@@ -1,18 +1,18 @@
 package simplex.equations;
 
 import communication.Instruction;
-import communication.InstructionsSender;
 
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class EquationElementsSeparator {
 
-    HashMap<String, String> coefficientsPerNameMap = new HashMap<>();
+    HashMap<String, String> coefficientsPerNameMap;
     String constant;
 
-    EquationElementsSeparator(String strEquation) {
-        separateConstant(strEquation);
+    public EquationElementsSeparator() {
+        this.coefficientsPerNameMap = new HashMap<>();
+        this.constant = "";
     }
 
     HashMap<String, String> getCoefficientsPerNameMap() {
@@ -23,40 +23,50 @@ public class EquationElementsSeparator {
         return constant;
     }
 
-    private void separateConstant(String strEquation) {
+    public Instruction separate(String strEquation) {
+        return separateConstant(strEquation);
+    }
+
+    private Instruction separateConstant(String strEquation) {
         String constantDelimiter = "=|<=|>=|<|>";
         String[] afterSplit = strEquation.split(constantDelimiter);
 
-        if (afterSplit.length < 2) {
-            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_PROPER_EQUATION);
-        } else {
-            separateVariables(afterSplit[0]);
+        if (afterSplit.length > 1)
             constant = afterSplit[1].strip();
-        }
+        return separateVariables(afterSplit[0]);
     }
 
-    private void separateVariables(String strEquation) {
+    private Instruction separateVariables(String strEquation) {
         String variablesDelimiter = "((?<=\\+)|(?=\\+))|((?<=-)|(?=-))";
         String[] afterSplit = strEquation.split(variablesDelimiter);
 
         if (afterSplit.length == 0) {
-            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_PROPER_EQUATION);
-            return;
+            return Instruction.NOT_PROPER_EQUATION;
         }
         if (afterSplit.length % 2 == 1) {
-            separateIntoCoefficientAndName("+", afterSplit[0].strip());
-            for (int i = 1; i < afterSplit.length - 1; i = i + 2) {
-                separateIntoCoefficientAndName(afterSplit[i].strip(), afterSplit[i + 1].strip());
+            Instruction instruction = separateIntoCoefficientAndName("+", afterSplit[0].strip());
+            if (instruction!= Instruction.CONTINUE){
+                return instruction;
             }
-        }else {
+            for (int i = 1; i < afterSplit.length - 1; i = i + 2) {
+                instruction = separateIntoCoefficientAndName(afterSplit[i].strip(), afterSplit[i + 1].strip());
+                if (instruction!= Instruction.CONTINUE){
+                    return instruction;
+                }
+            }
+        } else {
             for (int i = 0; i < afterSplit.length - 1; i = i + 2) {
-                separateIntoCoefficientAndName(afterSplit[i].strip(), afterSplit[i + 1].strip());
+                Instruction instruction = separateIntoCoefficientAndName(afterSplit[i].strip(), afterSplit[i + 1].strip());
+                if (instruction!= Instruction.CONTINUE){
+                    return instruction;
+                }
             }
         }
+        return Instruction.CONTINUE;
     }
 
 
-    private void separateIntoCoefficientAndName(String sign, String strVariable) {
+    private Instruction separateIntoCoefficientAndName(String sign, String strVariable) {
         String nameDelimiter = "^\\d+";
         String coefficientDelimiter = "[a-z]\\d+";
 
@@ -64,21 +74,21 @@ public class EquationElementsSeparator {
         Scanner coefficientSeparatingScanner = new Scanner(strVariable).useDelimiter(coefficientDelimiter);
 
         if (!nameSeparatingScanner.hasNext()) {
-            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NOT_NEEDED_VALUE);
+            return Instruction.NOT_NEEDED_VALUE;
         } else if (!coefficientSeparatingScanner.hasNext()) {
-            if (sign.equals("-")) {
-                coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), "-1");
-            } else {
-                coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), "1");
-            }
+            putInMap(nameSeparatingScanner.next().strip(), "1", sign);
         } else {
-            if (sign.equals("-")) {
-                coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), "-" + coefficientSeparatingScanner.next().strip());
-            } else {
-                coefficientsPerNameMap.put(nameSeparatingScanner.next().strip(), coefficientSeparatingScanner.next().strip());
-            }
+            putInMap(nameSeparatingScanner.next().strip(), coefficientSeparatingScanner.next().strip(), sign);
         }
+        return Instruction.CONTINUE;
+    }
 
+    private void putInMap(String varName, String coefficient, String sign) {
+        if (sign.equals("-")) {
+            coefficientsPerNameMap.put(varName, "-" + coefficient);
+        } else {
+            coefficientsPerNameMap.put(varName, coefficient);
+        }
     }
 }
 

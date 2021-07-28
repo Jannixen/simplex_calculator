@@ -32,7 +32,6 @@ public class SimplexProcessCoordinator {
         if (numberTry > 10000) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.UNSOLVABLE);
         }
-        new ResultsCreator(tableau);
     }
 
     private void makeSimplexRound(Tableau tableau, boolean ifMaximization) {

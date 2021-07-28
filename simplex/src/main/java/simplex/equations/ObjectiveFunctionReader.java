@@ -27,7 +27,8 @@ public class ObjectiveFunctionReader {
         if (userInput.isBlank()) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NO_OBJECTIVE);
         }
-        EquationElementsSeparator newSeparator = new EquationElementsSeparator(userInput);
+        EquationElementsSeparator newSeparator = new EquationElementsSeparator();
+        InstructionsSender.getInstructionSender().showInstructionForUser(newSeparator.separate(userInput));
         for (String variableName : newSeparator.getCoefficientsPerNameMap().keySet()) {
             addVariableFromObjectiveFunction(variableName, newSeparator.getCoefficientsPerNameMap().get(variableName));
         }
@@ -35,13 +36,18 @@ public class ObjectiveFunctionReader {
 
     private void addVariableFromObjectiveFunction(String rawVariableName, String rawVariableCost) {
         String variableName = valueChecker.checkName(rawVariableName);
-        double variableCost = valueChecker.checkNumber(rawVariableCost);
-        if (variableCost != 0 && variableName != null) {
-            Variable newVariable = new Variable(variableCost, variableName);
-            Variables.put(newVariable, new ArrayList<>());
-        } else {
-            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.BAD_NAME_OR_COST);
+        try {
+            double variableCost = valueChecker.checkNumber(rawVariableCost);
+            if (variableName != null) {
+                Variable newVariable = new Variable(variableCost, variableName);
+                Variables.put(newVariable, new ArrayList<>());
+            } else {
+                InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.BAD_NAME);
+            }
+        } catch (NumberFormatException e) {
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.BAD_COST);
         }
+
     }
 
 }

@@ -9,7 +9,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import simplex.equations.UserInputProcessor;
+import simplex.process.Controller;
 
 import java.io.FileNotFoundException;
 
@@ -119,10 +119,10 @@ public class EquationsPane extends TemplateIconPane {
             String constraintsString = constraintsTextArea.getText();
             String objectiveString = objectiveTextArea.getText();
             boolean ifMaximization = toggleButtonMax.isSelected();
-            new UserInputProcessor(objectiveString, constraintsString, ifMaximization);
+            Controller controller = new Controller(objectiveString, constraintsString, ifMaximization);
+            controller.conduct();
             event.consume();
         };
     }
-
 
 }

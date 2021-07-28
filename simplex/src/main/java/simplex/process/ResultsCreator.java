@@ -7,15 +7,13 @@ import simplex.objects.Variable;
 
 public class ResultsCreator {
 
-    private String results;
+    String results;
 
-    ResultsCreator(Tableau tableau) {
-        String results = createResults(tableau);
-        InstructionsSender.getInstructionSender().showResults(results);
+    public ResultsCreator() {
+        this.results = "";
     }
 
-    private String createResults(Tableau tableau) {
-        results = "";
+    String createResults(Tableau tableau) {
         double totalCost = readResultsFromTableau(tableau);
         totalCost = Math.round(totalCost * 100.00) / 100.00;
         results += "Entire cost: ";
