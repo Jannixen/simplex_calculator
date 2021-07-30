@@ -1,4 +1,4 @@
-package simplex.process;
+package simplex;
 
 import org.junit.Test;
 
@@ -95,8 +95,6 @@ public class ControllerTest {
 
         assertEquals(totalCost, 15, 0.0000001);
     }
-
-
 
 
 }

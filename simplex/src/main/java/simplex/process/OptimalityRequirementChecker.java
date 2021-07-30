@@ -2,9 +2,9 @@ package simplex.process;
 
 import simplex.objects.Tableau;
 
-public class OptimalityRequirementChecker {
+class OptimalityRequirementChecker {
 
-    public boolean checkOptimality(Tableau tableau, boolean ifMaximization) {
+    boolean checkOptimality(Tableau tableau, boolean ifMaximization) {
         if (ifMaximization) {
             return checkOptimalityForMaximization(tableau);
         } else {
@@ -12,7 +12,7 @@ public class OptimalityRequirementChecker {
         }
     }
 
-    public boolean checkOptimalityForMinimization(Tableau tableau) {
+    boolean checkOptimalityForMinimization(Tableau tableau) {
         for (Double optimalityIndex : tableau.getOptimalityIndexes()) {
             if (optimalityIndex > 0) {
                 return false;
@@ -21,7 +21,7 @@ public class OptimalityRequirementChecker {
         return true;
     }
 
-    public boolean checkOptimalityForMaximization(Tableau tableau) {
+    boolean checkOptimalityForMaximization(Tableau tableau) {
         for (Double optimalityIndex : tableau.getOptimalityIndexes()) {
             if (optimalityIndex < 0) {
                 return false;

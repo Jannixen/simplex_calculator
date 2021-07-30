@@ -1,6 +1,5 @@
 package simplex.process;
 
-import communication.InstructionsSender;
 import simplex.objects.Tableau;
 import simplex.objects.Variable;
 
@@ -13,7 +12,7 @@ public class ResultsCreator {
         this.results = "";
     }
 
-    String createResults(Tableau tableau) {
+    public String createResults(Tableau tableau) {
         double totalCost = readResultsFromTableau(tableau);
         totalCost = Math.round(totalCost * 100.00) / 100.00;
         results += "Entire cost: ";

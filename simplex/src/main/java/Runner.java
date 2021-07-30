@@ -2,7 +2,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
-import static visual.window.ApplicationWindow.makeApplicationWindow;
+import static visual.window.ApplicationWindow.getApplicationWindow;
 
 public class Runner extends Application {
 
@@ -12,7 +12,7 @@ public class Runner extends Application {
 
     @Override
     public void start(Stage mainStage) {
-        makeApplicationWindow();
+        getApplicationWindow();
         mainStage.setOnCloseRequest(
                 e -> {
                     Platform.exit();

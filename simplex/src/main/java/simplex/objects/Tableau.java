@@ -7,10 +7,10 @@ import java.util.Set;
 
 public class Tableau {
 
+    private final ArrayList<Double> constants;
     private ArrayList<Variable> baseVariables;
     private ArrayList<Variable> nonBaseVariables;
     private ArrayList<ArrayList<Double>> coefficients;
-    private final ArrayList<Double> constants;
     private ArrayList<Double> optimalityIndexes;
     private ArrayList<Double> dotProducts;
 
@@ -56,6 +56,20 @@ public class Tableau {
         return nonBaseVariables.size();
     }
 
+    public double getTotalCost() {
+        double transaction;
+        double totalCost = 0;
+
+        for (int row = 0; row < getLength(); row++) {
+            Variable baseVariable = baseVariables.get(row);
+            if (baseVariable.isRealVariable()) {
+                transaction = baseVariable.getCost() * constants.get(row);
+                totalCost += transaction;
+            }
+        }
+        return totalCost;
+    }
+
     private void initiateBaseVariables(HashMap<Variable, ArrayList<Double>> coefficientsList) {
         baseVariables = new ArrayList<>();
         for (int i = 0; i < coefficientsList.values().iterator().next().size(); i++) {
@@ -94,43 +108,5 @@ public class Tableau {
         }
     }
 
-
-    public void printTableau() {
-        for (int i = 0; i < this.getWidth(); i++) {
-            System.out.print(this.getNonBaseVariables().get(i).getCost() + " ");
-        }
-        System.out.println();
-        for (int i = 0; i < this.getLength(); i++) {
-            System.out.print(this.getBaseVariables().get(i).getCost() + " ");
-            System.out.print(this.getConstants().get(i) + " ");
-            for (int j = 0; j < this.getWidth(); j++) {
-                System.out.print(this.getCoefficients().get(i).get(j) + " ");
-            }
-            System.out.println();
-        }
-        for (int i = 0; i < this.getWidth(); i++) {
-            System.out.print(this.getDotProducts().get(i) + " ");
-        }
-        System.out.println();
-        for (int i = 0; i < this.getWidth(); i++) {
-            System.out.print(this.getOptimalityIndexes().get(i) + " ");
-        }
-        System.out.println();
-        System.out.println("----------------------");
-    }
-
-    public double getTotalCost() {
-        double transaction;
-        double totalCost = 0;
-
-        for (int row = 0; row < getLength(); row++) {
-            Variable baseVariable = baseVariables.get(row);
-            if (baseVariable.isRealVariable()) {
-                transaction = baseVariable.getCost() * constants.get(row);
-                totalCost += transaction;
-            }
-        }
-        return totalCost;
-    }
 
 }

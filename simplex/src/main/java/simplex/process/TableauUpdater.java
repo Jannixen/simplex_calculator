@@ -6,46 +6,36 @@ import simplex.objects.Variable;
 import java.util.ArrayList;
 
 
-public class TableauUpdater {
+class TableauUpdater {
 
-    void actualizeTableau(Tableau tableau, boolean ifMaximization) {
+    void actualizeTableau(Tableau tableau, boolean ifMaximization) throws ArrayIndexOutOfBoundsException {
 
         PivotFinder pivotFinder = new PivotFinder();
-        int pivotColumnIndex;
-        int pivotRowIndex;
+        int pivotColumnIndex = pivotFinder.findPivotColumnIndex(tableau, ifMaximization);
+        int pivotRowIndex = pivotFinder.findPivotRowIndex(tableau, pivotColumnIndex);
 
-        if (ifMaximization) {
-            pivotColumnIndex = pivotFinder.findMinimumOptimalityIndex(tableau);
-        } else {
-            pivotColumnIndex = pivotFinder.findMaximumOptimalityIndex(tableau);
-        }
-        pivotRowIndex = pivotFinder.findMinimumMinRatio(tableau, pivotColumnIndex);
-
-        if (pivotColumnIndex == Integer.MAX_VALUE || pivotRowIndex == Integer.MAX_VALUE) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
 
         swap(tableau, pivotRowIndex, pivotColumnIndex);
         actualizePivotRow(tableau, pivotRowIndex, pivotColumnIndex);
         actualizeRowsOtherThanPivotRow(tableau, pivotRowIndex, pivotColumnIndex);
     }
 
-    void actualizePivotRow(Tableau tableau, int pivotRowIndex, int pivotColumnIndex) {
+    private void actualizePivotRow(Tableau tableau, int pivotRowIndex, int pivotColumnIndex) {
         ArrayList<Double> pivotRow = tableau.getCoefficients().get(pivotRowIndex);
 
         double pivotConstant = tableau.getConstants().get(pivotRowIndex);
         double pivotValue = pivotRow.get(pivotColumnIndex);
 
-        for (int i = 0; i < pivotRow.size(); i++) {
+        for (int colIndex = 0; colIndex < pivotRow.size(); colIndex++) {
 
-            double newCellValue = pivotRow.get(i) / pivotValue;
+            double newCellValue = pivotRow.get(colIndex) / pivotValue;
 
-            pivotRow.set(i, newCellValue);
+            pivotRow.set(colIndex, newCellValue);
             tableau.getConstants().set(pivotRowIndex, pivotConstant / pivotValue);
         }
     }
 
-    void actualizeRowsOtherThanPivotRow(Tableau tableau, int pivotRowIndex, int pivotColumnIndex) {
+    private void actualizeRowsOtherThanPivotRow(Tableau tableau, int pivotRowIndex, int pivotColumnIndex) {
 
         ArrayList<Double> pivotRow = tableau.getCoefficients().get(pivotRowIndex);
         double pivotMinRatio = tableau.getConstants().get(pivotRowIndex);
@@ -62,15 +52,15 @@ public class TableauUpdater {
         }
     }
 
-    void actualizeCoefficients(
+    private void actualizeCoefficients(
             Tableau tableau, double crossValue, int rowIndex, ArrayList<Double> pivotRow) {
 
-        for (int columnIndex = 0; columnIndex < tableau.getWidth(); columnIndex++) {
+        for (int colIndex = 0; colIndex < tableau.getWidth(); colIndex++) {
 
-            double oldCoefficientValue = tableau.getCoefficients().get(rowIndex).get(columnIndex);
-            double newCoefficientValue = oldCoefficientValue - crossValue * pivotRow.get(columnIndex);
+            double oldCoefficientValue = tableau.getCoefficients().get(rowIndex).get(colIndex);
+            double newCoefficientValue = oldCoefficientValue - crossValue * pivotRow.get(colIndex);
 
-            tableau.getCoefficients().get(rowIndex).set(columnIndex, newCoefficientValue);
+            tableau.getCoefficients().get(rowIndex).set(colIndex, newCoefficientValue);
         }
     }
 

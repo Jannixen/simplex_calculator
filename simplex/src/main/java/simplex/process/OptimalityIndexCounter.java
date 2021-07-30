@@ -2,7 +2,7 @@ package simplex.process;
 
 import simplex.objects.Tableau;
 
-public class OptimalityIndexCounter {
+class OptimalityIndexCounter {
 
     void calculateOptimalityIndexes(Tableau tableau) {
 

@@ -1,4 +1,4 @@
-package visual.window.panes;
+package visual.window;
 
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -9,23 +9,23 @@ import javafx.scene.text.TextAlignment;
 
 import java.io.FileNotFoundException;
 
-import static visual.window.panes.PanesProperties.*;
+import static visual.window.PanesProperties.*;
 
-public class HeaderPane extends TemplateIconPane {
+class HeaderPane extends TemplateIconPane {
 
-    public HeaderPane() {
+    HeaderPane() {
         super(HEADER_PANE_POSITION_X, HEADER_PANE_POSITION_Y, HEADER_PANE_WIDTH, HEADER_PANE_HEIGHT, Color.WHITE, true);
         makeHeaderPane();
     }
 
     private void makeHeaderPane() {
-        getChildren().add(makeTitleTextLabel("Simplex Method Calculator"));
+        getChildren().add(makeTitleTextLabel());
         getChildren().add(makeIconImageView());
     }
 
 
-    private Label makeTitleTextLabel(String titleName) {
-        Label titleText = new Label(titleName);
+    private Label makeTitleTextLabel() {
+        Label titleText = new Label(TITLE);
         titleText.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
         titleText.setTextAlignment(TextAlignment.CENTER);
         titleText.setWrapText(true);

@@ -1,15 +1,15 @@
-package visual.window.panes;
+package visual.window;
 
 import javafx.scene.control.TextArea;
 import javafx.scene.paint.Color;
 
-import static visual.window.panes.PanesProperties.*;
+import static visual.window.PanesProperties.*;
 
 public class NotificationsPane extends TemplatePane {
 
-    TextArea notificationArea;
+    private TextArea notificationArea;
 
-    public NotificationsPane() {
+    NotificationsPane() {
         super(NOTIFICATIONS_PANE_POSITION_X, NOTIFICATIONS_PANE_POSITION_Y, NOTIFICATIONS_PANE_WIDTH,
                 NOTIFICATIONS_PANE_HEIGHT, Color.WHITESMOKE, false);
         makeNotificationsPane();

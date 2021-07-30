@@ -23,21 +23,21 @@ public class ObjectiveFunctionReader {
         return Variables;
     }
 
-    private void readObjectiveFunction(String userInput) {
-        if (userInput.isBlank()) {
+    private void readObjectiveFunction(String input) {
+        if (input.isBlank()) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NO_OBJECTIVE);
         }
-        EquationElementsSeparator newSeparator = new EquationElementsSeparator();
-        InstructionsSender.getInstructionSender().showInstructionForUser(newSeparator.separate(userInput));
+        EquationSeparator newSeparator = new EquationSeparator();
+        InstructionsSender.getInstructionSender().showInstructionForUser(newSeparator.separate(input));
         for (String variableName : newSeparator.getCoefficientsPerNameMap().keySet()) {
-            addVariableFromObjectiveFunction(variableName, newSeparator.getCoefficientsPerNameMap().get(variableName));
+            addSingleVariable(variableName, newSeparator.getCoefficientsPerNameMap().get(variableName));
         }
     }
 
-    private void addVariableFromObjectiveFunction(String rawVariableName, String rawVariableCost) {
-        String variableName = valueChecker.checkName(rawVariableName);
+    private void addSingleVariable(String rawName, String rawCost) {
+        String variableName = valueChecker.checkName(rawName);
         try {
-            double variableCost = valueChecker.checkNumber(rawVariableCost);
+            double variableCost = valueChecker.checkNumber(rawCost);
             if (variableName != null) {
                 Variable newVariable = new Variable(variableCost, variableName);
                 Variables.put(newVariable, new ArrayList<>());

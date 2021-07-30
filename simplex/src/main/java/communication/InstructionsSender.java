@@ -1,6 +1,6 @@
 package communication;
 
-import static visual.window.ApplicationWindow.APPLICATION_WINDOW;
+import static visual.window.ApplicationWindow.getApplicationWindow;
 
 public final class InstructionsSender {
 
@@ -11,10 +11,10 @@ public final class InstructionsSender {
     }
 
     public void showInstructionForUser(Instruction msg) {
-        APPLICATION_WINDOW.getNotificationsPane().showNotification(msg.instruction);
+        getApplicationWindow().getNotificationsPane().showNotification(msg.instruction);
     }
 
     public void showResults(String results) {
-        APPLICATION_WINDOW.getNotificationsPane().showNotification(results);
+        getApplicationWindow().getNotificationsPane().showNotification(results);
     }
 }

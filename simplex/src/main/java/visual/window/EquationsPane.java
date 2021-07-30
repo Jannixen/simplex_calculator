@@ -1,4 +1,4 @@
-package visual.window.panes;
+package visual.window;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,18 +9,17 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import simplex.process.Controller;
+import simplex.Controller;
 
 import java.io.FileNotFoundException;
 
-import static visual.window.panes.PanesProperties.*;
+import static visual.window.PanesProperties.*;
 
-public class EquationsPane extends TemplateIconPane {
+class EquationsPane extends TemplateIconPane {
 
-    ToggleButton toggleButtonMin;
-    ToggleButton toggleButtonMax;
+    private ToggleButton toggleButtonMax;
 
-    public EquationsPane() {
+    EquationsPane() {
         super(EQUATIONS_PANE_POSITION_X, EQUATIONS_PANE_POSITION_Y, EQUATIONS_PANE_WIDTH, EQUATIONS_PANE_HEIGHT, Color.AZURE.darker(), false);
         makeEquationPane();
     }
@@ -49,7 +48,7 @@ public class EquationsPane extends TemplateIconPane {
     }
 
     private TextArea makeWriteObjectiveTextArea() {
-        TextArea textArea = new TextArea("5x1 + 10x2 + 8x3");
+        TextArea textArea = new TextArea(OBJECTIVE_EXAMPLE);
 
         textArea.layoutXProperty().bind(widthProperty().subtract(textArea.widthProperty()).divide(2));
         textArea.layoutYProperty().bind(heightProperty().subtract(textArea.heightProperty()).divide(6));
@@ -72,7 +71,7 @@ public class EquationsPane extends TemplateIconPane {
     }
 
     private TextArea makeWriteConstraintsTextArea() {
-        TextArea textArea = new TextArea("3x1 + 5x2 + 2x3 >= 60 \n 4x1 + 4x2 + 4x3 <= 72 \n 2x1 + 4x2 + 5x3 <= 100");
+        TextArea textArea = new TextArea(CONSTRAINTS_EXAMPLE);
 
         textArea.layoutXProperty().bind(widthProperty().subtract(textArea.widthProperty()).divide(2));
         textArea.layoutYProperty().bind(heightProperty().subtract(textArea.heightProperty()).divide(1.5));
@@ -85,12 +84,13 @@ public class EquationsPane extends TemplateIconPane {
 
 
     private HBox makeMinMaxSwitcher() {
-        toggleButtonMin = new ToggleButton("Minimization");
-        toggleButtonMax = new ToggleButton("Maximization");
-
         ToggleGroup minMaxSwitcherGroup = new ToggleGroup();
 
+        ToggleButton toggleButtonMin = new ToggleButton("Minimization");
         toggleButtonMin.setToggleGroup(minMaxSwitcherGroup);
+        toggleButtonMin.setSelected(true);
+
+        toggleButtonMax = new ToggleButton("Maximization");
         toggleButtonMax.setToggleGroup(minMaxSwitcherGroup);
 
         HBox hbox = new HBox(toggleButtonMin, toggleButtonMax);
@@ -118,8 +118,7 @@ public class EquationsPane extends TemplateIconPane {
         return event -> {
             String constraintsString = constraintsTextArea.getText();
             String objectiveString = objectiveTextArea.getText();
-            boolean ifMaximization = toggleButtonMax.isSelected();
-            Controller controller = new Controller(objectiveString, constraintsString, ifMaximization);
+            Controller controller = new Controller(objectiveString, constraintsString, toggleButtonMax.isSelected());
             controller.conduct();
             event.consume();
         };

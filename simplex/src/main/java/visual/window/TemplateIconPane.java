@@ -1,4 +1,4 @@
-package visual.window.panes;
+package visual.window;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,7 +14,7 @@ abstract class TemplateIconPane extends TemplatePane {
         super(x, y, width, height, color, ifWithBorder);
     }
 
-    protected ImageView fetchIconImage(String path, int size) throws FileNotFoundException {
+    ImageView fetchIconImage(String path, int size) throws FileNotFoundException {
         InputStream stream;
         stream = new FileInputStream(path);
         Image image = new Image(stream);

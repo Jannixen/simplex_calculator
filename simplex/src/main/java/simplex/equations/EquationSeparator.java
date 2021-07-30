@@ -5,12 +5,12 @@ import communication.Instruction;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class EquationElementsSeparator {
+class EquationSeparator {
 
     HashMap<String, String> coefficientsPerNameMap;
     String constant;
 
-    public EquationElementsSeparator() {
+    public EquationSeparator() {
         this.coefficientsPerNameMap = new HashMap<>();
         this.constant = "";
     }
@@ -23,7 +23,7 @@ public class EquationElementsSeparator {
         return constant;
     }
 
-    public Instruction separate(String strEquation) {
+    Instruction separate(String strEquation) {
         return separateConstant(strEquation);
     }
 
@@ -39,34 +39,28 @@ public class EquationElementsSeparator {
     private Instruction separateVariables(String strEquation) {
         String variablesDelimiter = "((?<=\\+)|(?=\\+))|((?<=-)|(?=-))";
         String[] afterSplit = strEquation.split(variablesDelimiter);
+        String coefficient;
+        int characterCounter = 0;
+        String sign;
 
-        if (afterSplit.length == 0) {
-            return Instruction.NOT_PROPER_EQUATION;
-        }
-        if (afterSplit.length % 2 == 1) {
-            Instruction instruction = separateIntoCoefficientAndName("+", afterSplit[0].strip());
-            if (instruction!= Instruction.CONTINUE){
-                return instruction;
+        while (characterCounter < afterSplit.length) {
+            if (afterSplit.length % 2 == 1 && characterCounter == 0) {
+                sign = "+";
+            } else {
+                sign = afterSplit[characterCounter++].strip();
             }
-            for (int i = 1; i < afterSplit.length - 1; i = i + 2) {
-                instruction = separateIntoCoefficientAndName(afterSplit[i].strip(), afterSplit[i + 1].strip());
-                if (instruction!= Instruction.CONTINUE){
-                    return instruction;
-                }
-            }
-        } else {
-            for (int i = 0; i < afterSplit.length - 1; i = i + 2) {
-                Instruction instruction = separateIntoCoefficientAndName(afterSplit[i].strip(), afterSplit[i + 1].strip());
-                if (instruction!= Instruction.CONTINUE){
-                    return instruction;
-                }
+            coefficient = afterSplit[characterCounter++].strip();
+            try {
+                separateIntoCoefficientAndName(sign, coefficient);
+            } catch (ExceptionInInitializerError e) {
+                return Instruction.NOT_NEEDED_VALUE;
             }
         }
         return Instruction.CONTINUE;
     }
 
 
-    private Instruction separateIntoCoefficientAndName(String sign, String strVariable) {
+    private void separateIntoCoefficientAndName(String sign, String strVariable) {
         String nameDelimiter = "^\\d+";
         String coefficientDelimiter = "[a-z]\\d+";
 
@@ -74,13 +68,12 @@ public class EquationElementsSeparator {
         Scanner coefficientSeparatingScanner = new Scanner(strVariable).useDelimiter(coefficientDelimiter);
 
         if (!nameSeparatingScanner.hasNext()) {
-            return Instruction.NOT_NEEDED_VALUE;
+            throw new ExceptionInInitializerError();
         } else if (!coefficientSeparatingScanner.hasNext()) {
             putInMap(nameSeparatingScanner.next().strip(), "1", sign);
         } else {
             putInMap(nameSeparatingScanner.next().strip(), coefficientSeparatingScanner.next().strip(), sign);
         }
-        return Instruction.CONTINUE;
     }
 
     private void putInMap(String varName, String coefficient, String sign) {

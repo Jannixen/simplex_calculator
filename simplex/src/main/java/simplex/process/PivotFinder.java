@@ -2,9 +2,33 @@ package simplex.process;
 
 import simplex.objects.Tableau;
 
-public class PivotFinder {
+class PivotFinder {
 
-    int findMaximumOptimalityIndex(Tableau tableau) {
+    int findPivotColumnIndex(Tableau tableau, boolean ifMaximization) {
+        int pivotColumnIndex;
+
+        if (ifMaximization) {
+            pivotColumnIndex = findMinimumOptimalityIndex(tableau);
+        } else {
+            pivotColumnIndex = findMaximumOptimalityIndex(tableau);
+        }
+        return pivotColumnIndex;
+
+    }
+
+    int findPivotRowIndex(Tableau tableau, int pivotColumnIndex) throws ArrayIndexOutOfBoundsException {
+
+        int pivotRowIndex;
+        pivotRowIndex = findMinimumMinRatio(tableau, pivotColumnIndex);
+
+        if (pivotColumnIndex == Integer.MAX_VALUE || pivotRowIndex == Integer.MAX_VALUE) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        return pivotRowIndex;
+
+    }
+
+    private int findMaximumOptimalityIndex(Tableau tableau) {
         double maxOptimality = -Integer.MAX_VALUE;
         int pivotColumnIndex = Integer.MAX_VALUE;
 
@@ -18,7 +42,7 @@ public class PivotFinder {
         return pivotColumnIndex;
     }
 
-    int findMinimumOptimalityIndex(Tableau tableau) {
+    private int findMinimumOptimalityIndex(Tableau tableau) {
         double minOptimality = Integer.MAX_VALUE;
         int pivotColumnIndex = Integer.MAX_VALUE;
 
@@ -32,7 +56,7 @@ public class PivotFinder {
         return pivotColumnIndex;
     }
 
-    int findMinimumMinRatio(Tableau tableau, int pivotColumnNumber) {
+    private int findMinimumMinRatio(Tableau tableau, int pivotColumnNumber) {
         double minMinRatio = Integer.MAX_VALUE;
         int pivotRowIndex = Integer.MAX_VALUE;
         double minRatioCalculation;

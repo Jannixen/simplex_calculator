@@ -1,9 +1,9 @@
 package simplex.equations;
 
 
-public final class ValueChecker {
+final class ValueChecker {
 
-    public static final ValueChecker valueChecker = new ValueChecker();
+    static final ValueChecker valueChecker = new ValueChecker();
 
     String checkName(String name) {
         if (name.length() > 0 & name.length() <= 50) return name;

@@ -2,10 +2,10 @@ package simplex.objects;
 
 public class Variable {
 
-    protected final String name;
-    protected final boolean ifRealVariable;
-    protected final boolean ifArtificialVariable;
-    protected double cost;
+    private final String name;
+    private final boolean ifRealVariable;
+    private final boolean ifArtificialVariable;
+    private double cost;
 
     public Variable(double cost) {
         this.cost = cost;

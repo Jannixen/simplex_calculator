@@ -16,15 +16,16 @@ import static simplex.equations.ValueChecker.valueChecker;
 
 public class ConstraintsReader {
 
-    private HashMap<Variable, ArrayList<Double>> variables;
     private final ArrayList<Double> constants;
-    private int currentConstraintEquationNumber;
+    private final HashMap<Variable, ArrayList<Double>> variables;
+    private int currentEquationNumber;
 
-    public ConstraintsReader(HashMap<Variable, ArrayList<Double>> Variables, String userInput) {
-        addVariables(Variables);
+    public ConstraintsReader(HashMap<Variable, ArrayList<Double>> variables, String input) {
         this.constants = new ArrayList<>();
-        currentConstraintEquationNumber = 0;
-        readConstraints(userInput);
+        currentEquationNumber = 0;
+
+        this.variables = variables;
+        readConstraints(input);
     }
 
     public HashMap<Variable, ArrayList<Double>> getVariables() {
@@ -35,35 +36,28 @@ public class ConstraintsReader {
         return constants;
     }
 
-    private void addVariables(HashMap<Variable, ArrayList<Double>> Variables) {
-        variables = new HashMap<>();
-        for (Variable Variable : Variables.keySet()) {
-            variables.put(Variable, Variables.get(Variable));
-        }
-    }
-
-    private void readConstraints(String userInput) {
-        Scanner constraintsInputScanner = new Scanner(userInput);
-        if (!constraintsInputScanner.hasNext()) {
+    private void readConstraints(String input) {
+        Scanner constraintsScanner = new Scanner(input);
+        if (!constraintsScanner.hasNext()) {
             InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.NO_CONSTRAINTS);
             return;
         }
-        while (constraintsInputScanner.hasNextLine()) {
-            readNextEquation(constraintsInputScanner);
+        while (constraintsScanner.hasNextLine()) {
+            readNextEquation(constraintsScanner);
         }
     }
 
-    private void readNextEquation(Scanner constraintsInputScanner) {
-        String strEquation = constraintsInputScanner.nextLine();
-        currentConstraintEquationNumber++;
-        EquationElementsSeparator separator = new EquationElementsSeparator();
-        InstructionsSender.getInstructionSender().showInstructionForUser(separator.separate(strEquation));
-        addNewCoefficientsLineForAlreadyDeclared(separator.getCoefficientsPerNameMap());
-        addAdditionalVariables(strEquation);
-        constants.add(valueChecker.checkNumber(separator.getConstant()));
+    private void readNextEquation(Scanner input) {
+        String equation = input.nextLine();
+        currentEquationNumber++;
+        EquationSeparator separator = new EquationSeparator();
+        InstructionsSender.getInstructionSender().showInstructionForUser(separator.separate(equation));
+        fillInVariablesCoefficients(separator.getCoefficientsPerNameMap());
+        addAdditionalVariables(equation);
+        addConstant(separator);
     }
 
-    private void addNewCoefficientsLineForAlreadyDeclared(HashMap<String, String> coefficientPerNameMap) {
+    private void fillInVariablesCoefficients(HashMap<String, String> coefficientPerNameMap) {
         for (Variable variable : variables.keySet()) {
             if (variable != null && coefficientPerNameMap.containsKey(variable.getName())) {
                 String variableName = coefficientPerNameMap.get(variable.getName());
@@ -80,34 +74,41 @@ public class ConstraintsReader {
         final Matcher m = Pattern.compile(constantDelimiter).matcher(strEquation);
         while (m.find()) {
             if (Objects.equals(m.group().strip(), "<=") || Objects.equals(m.group().strip(), "<")) {
-                addAdditionalVariable(VariableType.SLACK);
+                addSingleAdditionalVariable(VariableType.SLACK);
             } else if (Objects.equals(m.group().strip(), ">") || Objects.equals(m.group().strip(), ">=")) {
-                addAdditionalVariable(VariableType.SURPLUS);
-                addAdditionalVariable(VariableType.ARTIFICIAL);
+                addSingleAdditionalVariable(VariableType.SURPLUS);
+                addSingleAdditionalVariable(VariableType.ARTIFICIAL);
             } else if (Objects.equals(m.group().strip(), "=")) {
-                addAdditionalVariable(VariableType.ARTIFICIAL);
+                addSingleAdditionalVariable(VariableType.ARTIFICIAL);
             }
         }
     }
 
 
-    private void addAdditionalVariable(VariableType varType) {
+    private void addSingleAdditionalVariable(VariableType varType) {
         Variable newVar = new Variable(varType.getCost());
         if (varType.equals(VariableType.ARTIFICIAL)) {
             newVar = new Variable(varType.getCost(), true);
         }
-        ArrayList<Double> newVarCoefficientLine = complementCoefficientsAfterAddingVariable();
-        newVarCoefficientLine.add(varType.getCoefficient());
-        variables.put(newVar, newVarCoefficientLine);
-    }
-
-    private ArrayList<Double> complementCoefficientsAfterAddingVariable() {
         ArrayList<Double> newVariableCoefficientLine = new ArrayList<>();
-        for (int i = 0; i < currentConstraintEquationNumber - 1; i++) {
+        for (int i = 0; i < currentEquationNumber - 1; i++) {
             newVariableCoefficientLine.add(0.0);
         }
-        return newVariableCoefficientLine;
+        newVariableCoefficientLine.add(varType.getCoefficient());
+        variables.put(newVar, newVariableCoefficientLine);
     }
+
+    private void addConstant(EquationSeparator separator) {
+        if (separator.getConstant() == null) {
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.CONSTANT_LACK);
+        }
+        try {
+            constants.add(valueChecker.checkNumber(separator.getConstant()));
+        } catch (NumberFormatException e) {
+            InstructionsSender.getInstructionSender().showInstructionForUser(Instruction.BAD_CONSTANT);
+        }
+    }
+
 
 }
 
